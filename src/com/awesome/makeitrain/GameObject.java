@@ -32,7 +32,7 @@ public abstract class GameObject {
 	}
 
 	public Vector2f getPosition() {
-		return new Vector2f(boundingBox.getWidth(), boundingBox.getHeight());
+		return new Vector2f(boundingBox.getX(), boundingBox.getY());
 	}
 	
 	public void setPosition(Vector2f position) {

@@ -9,6 +9,8 @@ import java.util.HashMap;
 import javax.imageio.ImageIO;
 
 import org.newdawn.slick.Color;
+import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.util.xml.XMLElement;
@@ -22,7 +24,7 @@ import com.awesome.map.tiles.TurfMapTile;
 
 public class Map 
 {
-	private static final int TILE_SIZE = 32;
+	private static final int TILE_SIZE = 20;
 	private static final String XML_TILE_ELEMENT = "Tile";
 	private static final String XML_TILE_TYPE_ATTRIBUTE = "type";
 	private static final String XML_TILE_NAME_ATTRIBUTE = "name";
@@ -48,7 +50,7 @@ public class Map
 			case "turf":
 			{
 				TurfTileDefinition turfTileDef = (TurfTileDefinition)inTileDefinition;
-				return new TurfMapTile();
+				return new TurfMapTile(turfTileDef.getType(), turfTileDef.getName(), turfTileDef.getHasCollision(), turfTileDef.getTextureName());
 			}
 			default:
 			{
@@ -62,7 +64,7 @@ public class Map
 		return (int)Math.round(inColor*255.0);
 	}
 	
-	private static MapTile ParseColor(Color inColor, HashMap<String, TileDefinition> inTileDefinitions)
+	private static MapTile GetMapTileByColor(Color inColor, HashMap<String, TileDefinition> inTileDefinitions)
 	{
 		String colorString = String.format("%d,%d,%d,%d",
 				ConvertFloatColorToByte(inColor.r),
@@ -120,12 +122,12 @@ public class Map
 		return tileDefs;
 	}
 	
-	public static Map LoadFromFile(String inFilename)
+	public static Map LoadFromFile(String inMapImageFilename)
 	{
 		try 
 		{
-			HashMap<String, TileDefinition> tileDefs = LoadTileDefinitions(inFilename);
-			BufferedImage mapImage = ImageIO.read(new File(inFilename));
+			HashMap<String, TileDefinition> tileDefs = LoadTileDefinitions(inMapImageFilename);
+			BufferedImage mapImage = ImageIO.read(new File(inMapImageFilename));
 			int mapWidth = mapImage.getWidth();
 			int mapHeight = mapImage.getHeight();
 			ArrayList<MapTile> mapTiles = new ArrayList<MapTile>();
@@ -134,7 +136,7 @@ public class Map
 				for (int x = 0; x < mapWidth; x++)
 				{
 					Color pixelColor = new Color(mapImage.getRGB(x, y));
-					MapTile mapTile = ParseColor(pixelColor, tileDefs);
+					MapTile mapTile = GetMapTileByColor(pixelColor, tileDefs);
 					if (mapTile != null)
 					{
 						mapTile.setPosition(new Vector2f(x*TILE_SIZE,y*TILE_SIZE));
@@ -153,6 +155,30 @@ public class Map
 			e.printStackTrace();
 			
 			return null;
+		}
+	}
+	
+	public void init(GameContainer gc) throws SlickException
+	{
+		for (MapTile mapTile : mMapTiles)
+		{
+			mapTile.init(gc);
+		}
+	}
+	
+	public void render(GameContainer gc, Graphics g) throws SlickException
+	{
+		for (MapTile mapTile : mMapTiles)
+		{
+			mapTile.render(gc, g);
+		}
+	}
+
+	public void update(GameContainer gc, int delta) throws SlickException
+	{
+		for (MapTile mapTile : mMapTiles)
+		{
+			mapTile.update(gc, delta);
 		}
 	}
 }
