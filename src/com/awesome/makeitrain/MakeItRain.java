@@ -7,6 +7,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Vector2f;
 
 import com.awesome.map.Map;
 import com.awesome.map.tiles.MapTile;
@@ -21,6 +22,7 @@ public class MakeItRain extends BasicGame {
 	private int mScreenWidth;
 	private int mScreenHeight;
 	private Map mMap;
+	private Player mPlayer;
 	
 	public MakeItRain() {
 		super("Make It Rain");
@@ -54,7 +56,8 @@ public class MakeItRain extends BasicGame {
 		mMap.init(gc);
 		
 		EntityManager entityManager = EntityManager.getInstance();
-		entityManager.AddEntity(new Player());
+		mPlayer = new Player();
+		entityManager.AddEntity(mPlayer);
 		entityManager.AddEntity(new Enemy());
 		for (Entity entity : entityManager.getEntities()) {
 			entity.init(gc);
@@ -64,12 +67,23 @@ public class MakeItRain extends BasicGame {
 	@Override
 	public void render(GameContainer gc, Graphics g) throws SlickException {
 		g.clear();
+		
+		Vector2f pos = mPlayer.getPosition();
+		Vector2f offset = new Vector2f( ( mScreenWidth / 2 ) - ( Map.TILE_SIZE / 2 ) - pos.x,
+										( mScreenHeight / 2 ) - ( Map.TILE_SIZE / 2 ) - pos.y );
+		g.translate(offset.x, offset.y);
+		
 		mMap.render(gc, g);
 		
 		EntityManager entityManager = EntityManager.getInstance();
 		for (Entity entity : entityManager.getEntities()) {
 			entity.render(gc, g);
 		}
+		
+		g.translate(-offset.x, -offset.y);
+		
+		g.drawLine(mScreenWidth/2.0f, 0.0f, mScreenWidth / 2.0f, mScreenHeight );
+		g.drawLine(0.0f, mScreenHeight / 2.0f, mScreenWidth, mScreenHeight / 2.0f );
 	}
 
 	@Override
