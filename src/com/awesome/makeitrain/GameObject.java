@@ -1,22 +1,26 @@
 package com.awesome.makeitrain;
 
 import org.newdawn.slick.Image;
+import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 
 public abstract class GameObject {
 	
 	private static int ID_COUNTER = 0;
-	private static final Vector2f GRAVITY = new Vector2f(0f, 4f);
+	
+	public static final Vector2f GRAVITY = new Vector2f(0f, -4f);
+	protected Vector2f acceleration;
+	protected Rectangle boundingBox;
 	
 	protected Image image;
 	
 	protected int ID;
-	protected Vector2f position;
 	
 	public GameObject() {
 		ID = ID_COUNTER;
-		
 		ID_COUNTER ++;
+		
+		acceleration = new Vector2f(0f, 0f);
 	}
 	
 	public Image getImage() {
@@ -28,11 +32,11 @@ public abstract class GameObject {
 	}
 
 	public Vector2f getPosition() {
-		return position;
+		return new Vector2f(boundingBox.getWidth(), boundingBox.getHeight());
 	}
 	
 	public void setPosition(Vector2f position) {
-		this.position = position;
+		boundingBox.setLocation(position.x, position.y);
 	}
 	
 	public int getID() {
