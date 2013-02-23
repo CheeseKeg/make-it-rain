@@ -16,6 +16,8 @@ public class MakeItRain extends BasicGame {
 	private int mScreenWidth;
 	private int mScreenHeight;
 	
+	
+	
 	public MakeItRain() {
 		super("Make It Rain");
 		
@@ -58,6 +60,10 @@ public class MakeItRain extends BasicGame {
 	@Override
 	public void update(GameContainer gc, int delta) throws SlickException {
 		
+	}
+	
+	private void updateCollision() {
+		//for (Entity entity : )
 	}
 	
 	@Override

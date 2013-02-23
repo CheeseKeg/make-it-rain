@@ -1,9 +1,8 @@
-package com.awesome.makeitrain;
+package com.awesome.entity;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.geom.Rectangle;
 
 
 public class Player extends Entity {
@@ -13,8 +12,8 @@ public class Player extends Entity {
 	}
 
 	public void init(GameContainer gc) throws SlickException {
-		image = new Image("images/player.png");
-		boundingBox = new Rectangle(
+		image = new Image("res/images/player.png");
+		boundingBox.setBounds(
 				boundingBox.getX(), boundingBox.getY(),
 				image.getWidth(), image.getHeight());
 	}

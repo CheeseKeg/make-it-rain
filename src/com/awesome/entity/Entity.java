@@ -1,8 +1,11 @@
-package com.awesome.makeitrain;
+package com.awesome.entity;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
+
+import com.awesome.makeitrain.Drawable;
+import com.awesome.makeitrain.GameObject;
 
 public abstract class Entity extends GameObject implements Drawable {
 	public Entity() {
