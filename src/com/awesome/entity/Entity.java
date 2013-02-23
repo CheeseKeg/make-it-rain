@@ -3,6 +3,7 @@ package com.awesome.entity;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 
 import com.awesome.makeitrain.Drawable;
@@ -97,9 +98,22 @@ public abstract class Entity extends GameObject implements Drawable {
 			if (tile.getType() == "turf") {
 				TurfMapTile turfHandle = (TurfMapTile)tile;
 				if (turfHandle.getHasCollision()) {
-					// Collision stuff
+					// Do collision push
+					Rectangle BB = this.boundingBox, tileBB = tile.getBoundingBox();
+					
+					if (BB.getMaxY() > tileBB.getMinY() && BB.getMaxY() < tileBB.getMaxY()) {
+						BB.setY(BB.getY() - (BB.getMaxY() - tileBB.getMinY()));
+					}
 				}
 			}
 		}
+	}
+	
+	private float min(float a, float b) {
+		return a > b ? b : a;
+	}
+	
+	private float max(float a, float b) {
+		return a > b ? a : b;
 	}
 }

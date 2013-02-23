@@ -9,7 +9,6 @@ import com.awesome.map.Map;
 
 
 public class Player extends Entity {
-	
 	public Player() {
 		super();
 	}
