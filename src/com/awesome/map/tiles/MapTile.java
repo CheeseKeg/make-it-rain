@@ -1,4 +1,6 @@
-package com.awesome.makeitrain;
+package com.awesome.map.tiles;
+
+import com.awesome.makeitrain.GameObject;
 
 public abstract class MapTile extends GameObject 
 {

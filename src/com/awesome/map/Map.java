@@ -1,4 +1,4 @@
-package com.awesome.makeitrain;
+package com.awesome.map;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -14,6 +14,11 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.util.xml.XMLElement;
 import org.newdawn.slick.util.xml.XMLElementList;
 import org.newdawn.slick.util.xml.XMLParser;
+
+import com.awesome.map.tiledefinitions.TileDefinition;
+import com.awesome.map.tiledefinitions.TurfTileDefinition;
+import com.awesome.map.tiles.MapTile;
+import com.awesome.map.tiles.TurfMapTile;
 
 public class Map 
 {

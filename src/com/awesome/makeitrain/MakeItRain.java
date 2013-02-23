@@ -8,6 +8,8 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
+import com.awesome.map.Map;
+
 public class MakeItRain extends BasicGame {
 	
 	private static AppGameContainer app;

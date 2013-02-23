@@ -1,4 +1,4 @@
-package com.awesome.makeitrain;
+package com.awesome.map.tiledefinitions;
 
 public class TurfTileDefinition extends TileDefinition 
 {
