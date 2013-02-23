@@ -2,4 +2,6 @@
 	<Tile type="turf" name="grass" color="0,255,0,255" collision="true" texture="grass.png" />
 	<Tile type="turf" name="rock" color="128,128,128,255" collision="true" texture="rock.png" />
 	<Tile type="turf" name="water" color="0,0,255,255" collision="false" texture="water.png" />
+	<Tile type="player_spawn" name="start_player_spawn" color="255,255,0,255" />
+	<Tile type="enemy_spawn" name="enemy_spawn" color="255,0,0,255" />
 </TileDefinitions>
