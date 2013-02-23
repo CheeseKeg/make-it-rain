@@ -6,7 +6,6 @@ import org.newdawn.slick.SlickException;
 
 
 public class Player extends Entity {
-	
 	public Player() {
 		super();
 	}
