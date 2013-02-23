@@ -80,6 +80,8 @@ public class MakeItRain extends BasicGame {
 		for (Entity entity : entityManager.getEntities()) {
 			entity.update(gc, delta);
 		}
+		
+		updateCollision();
 	}
 	
 	private void updateCollision() {

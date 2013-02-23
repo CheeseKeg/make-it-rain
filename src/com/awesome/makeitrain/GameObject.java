@@ -8,7 +8,7 @@ public abstract class GameObject {
 	
 	private static int ID_COUNTER = 0;
 	
-	protected Vector2f acceleration = new Vector2f(0.0f, 0.0f);
+	protected Vector2f velocity = new Vector2f(0.0f, 0.0f);
 	protected Rectangle boundingBox = new Rectangle(0, 0, 0, 0);
 	
 	protected Image image;
@@ -19,7 +19,7 @@ public abstract class GameObject {
 		ID = ID_COUNTER;
 		ID_COUNTER ++;
 		
-		acceleration = new Vector2f(0f, 0f);
+		velocity = new Vector2f(0f, 0f);
 	}
 	
 	public Rectangle getBoundingBox() {

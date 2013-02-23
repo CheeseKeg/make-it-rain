@@ -25,7 +25,7 @@ public abstract class Entity extends GameObject implements Drawable {
 	
 	protected boolean mControlFlags[] = new boolean[eControlFlag.kControlFlag_Count.ordinal()];
 	
-	public static final Vector2f GRAVITY = new Vector2f(0f, 0f);
+	public static final Vector2f GRAVITY = new Vector2f(0f, 1f);
 	
 	protected float mJumpVelocity = -5.0f;
 	protected float mMoveVelocity = 3.0f;
@@ -53,17 +53,17 @@ public abstract class Entity extends GameObject implements Drawable {
 		//Jump
 		if (GetControlFlag(eControlFlag.kControlFlag_Jump))
 		{
-			acceleration.y = mJumpVelocity;
+			velocity.y = mJumpVelocity;
 		}
 		//Left
 		if (GetControlFlag(eControlFlag.kControlFlag_Left))
 		{
-			acceleration.x -= mMoveVelocity;
+			velocity.x -= mMoveVelocity;
 		}
 		//Right
 		if (GetControlFlag(eControlFlag.kControlFlag_Right))
 		{
-			acceleration.x += mMoveVelocity;
+			velocity.x += mMoveVelocity;
 		}
 		//Attack
 		if (GetControlFlag(eControlFlag.kControlFlag_Attack))
@@ -86,16 +86,17 @@ public abstract class Entity extends GameObject implements Drawable {
 	@Override
 	public void update(GameContainer gc, int delta) throws SlickException {
 		ApplyControlFlags();
-		acceleration.add(GRAVITY);
+		velocity.add(GRAVITY);
 		boundingBox.setLocation(
-				boundingBox.getX() + acceleration.x,
-				boundingBox.getY() + acceleration.y);
-		acceleration.x *= mWalkFriction;
+				boundingBox.getX() + velocity.x,
+				boundingBox.getY() + velocity.y);
+		velocity.x *= mWalkFriction;
 	}
 	
 	public void checkCollision(MapTile tile) {
 		if (this.boundingBox.intersects(tile.getBoundingBox())) {
-			if (tile.getType() == "turf") {
+			if (tile.getType().equals("turf")) {
+				System.out.println("lol");
 				TurfMapTile turfHandle = (TurfMapTile)tile;
 				if (turfHandle.getHasCollision()) {
 					// Do collision push
@@ -103,6 +104,7 @@ public abstract class Entity extends GameObject implements Drawable {
 					
 					if (BB.getMaxY() > tileBB.getMinY() && BB.getMaxY() < tileBB.getMaxY()) {
 						BB.setY(BB.getY() - (BB.getMaxY() - tileBB.getMinY()));
+						velocity.y = 0;
 					}
 				}
 			}
