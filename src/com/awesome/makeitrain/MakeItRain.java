@@ -7,10 +7,14 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.fills.GradientFill;
+import org.newdawn.slick.geom.Circle;
 
 public class MakeItRain extends BasicGame {
 	
 	private static AppGameContainer app;
+	private int mScreenWidth;
+	private int mScreenHeight;
 	
 	public MakeItRain() {
 		super("Make It Rain");
@@ -20,9 +24,12 @@ public class MakeItRain extends BasicGame {
 		System.setProperty("org.lwjgl.librarypath", System.getProperty("user.dir") + "/lib/native/" + LWJGLUtil.getPlatformName());
 		System.setProperty("net.java.games.input.librarypath", System.getProperty("org.lwjgl.librarypath"));
 		
+		mScreenWidth = 1280;
+		mScreenHeight = 720;
+		
 		try {
 			app = new AppGameContainer(this);
-			app.setDisplayMode(1280, 720, false);
+			app.setDisplayMode(mScreenWidth, mScreenHeight, false);
 			app.setVSync(true);
 			app.setTargetFrameRate(60);
 			app.start();
@@ -40,7 +47,10 @@ public class MakeItRain extends BasicGame {
 	
 	@Override
 	public void render(GameContainer gc, Graphics g) throws SlickException {
-	
+		g.clear();
+		g.translate(mScreenWidth/2, mScreenHeight/2);
+		int lineWidth = g.getFont().getWidth("Hello World");
+		g.drawString("Hello World!", -(lineWidth/2), 0.0f);
 	}
 
 	@Override
