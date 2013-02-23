@@ -8,7 +8,6 @@ public abstract class GameObject {
 	
 	private static int ID_COUNTER = 0;
 	
-	public static final Vector2f GRAVITY = new Vector2f(0f, 1f);
 	protected Vector2f acceleration = new Vector2f(0.0f, 0.0f);
 	protected Rectangle boundingBox = new Rectangle(0, 0, 0, 0);
 	
