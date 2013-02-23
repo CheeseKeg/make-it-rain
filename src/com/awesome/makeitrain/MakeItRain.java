@@ -2,6 +2,7 @@ package com.awesome.makeitrain;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 
 import org.lwjgl.LWJGLUtil;
 import org.newdawn.slick.AppGameContainer;
@@ -14,6 +15,9 @@ import org.newdawn.slick.util.ResourceLoader;
 import org.newdawn.slick.util.ResourceLocation;
 
 import com.awesome.map.Map;
+import com.awesome.map.tiles.MapTile;
+import com.awesome.entity.Entity;
+import com.awesome.entity.Player;
 
 public class MakeItRain extends BasicGame {
 	
@@ -22,7 +26,7 @@ public class MakeItRain extends BasicGame {
 	private int mScreenHeight;
 	private Map mMap;
 	
-	
+	private ArrayList<Entity> entities;
 	
 	public MakeItRain() {
 		super("Make It Rain");
@@ -44,6 +48,8 @@ public class MakeItRain extends BasicGame {
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
+		
+		entities = new ArrayList<Entity>();
 	}
 	
 	// -- SLICK GAME METHOD OVERRIDES --
@@ -54,6 +60,8 @@ public class MakeItRain extends BasicGame {
 		
 		mMap = Map.LoadFromFile("res/maps/TestMap.png");
 		mMap.init(gc);
+		
+		entities.add(new Player());
 	}
 	
 	@Override
@@ -68,7 +76,11 @@ public class MakeItRain extends BasicGame {
 	}
 	
 	private void updateCollision() {
-		//for (Entity entity : )
+		for (Entity entity : entities) {
+			for (MapTile mapObject : mMap.getMapTiles()) {
+				entity.checkCollision(mapObject);
+			}
+		}
 	}
 	
 	@Override

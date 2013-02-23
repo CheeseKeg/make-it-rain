@@ -23,6 +23,14 @@ public abstract class GameObject {
 		acceleration = new Vector2f(0f, 0f);
 	}
 	
+	public Rectangle getBoundingBox() {
+		return boundingBox;
+	}
+	
+	public void setBoundingBox(Rectangle boundingBox) {
+		this.boundingBox = boundingBox;
+	}
+	
 	public Image getImage() {
 		return image;
 	}
