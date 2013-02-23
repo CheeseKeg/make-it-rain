@@ -1,5 +1,8 @@
 package com.awesome.makeitrain;
 
+import java.io.InputStream;
+import java.net.URL;
+
 import org.lwjgl.LWJGLUtil;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
@@ -7,6 +10,8 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.util.ResourceLoader;
+import org.newdawn.slick.util.ResourceLocation;
 
 import com.awesome.map.Map;
 
@@ -15,6 +20,7 @@ public class MakeItRain extends BasicGame {
 	private static AppGameContainer app;
 	private int mScreenWidth;
 	private int mScreenHeight;
+	private Map mMap;
 	
 	
 	
@@ -28,8 +34,6 @@ public class MakeItRain extends BasicGame {
 		
 		mScreenWidth = 1280;
 		mScreenHeight = 720;
-		
-		Map testMap = Map.LoadFromFile("res/maps/TestMap.png");
 		
 		try {
 			app = new AppGameContainer(this);
@@ -47,19 +51,20 @@ public class MakeItRain extends BasicGame {
 	@Override
 	public void init(GameContainer gc) throws SlickException {
 		gc.setShowFPS(true);
+		
+		mMap = Map.LoadFromFile("res/maps/TestMap.png");
+		mMap.init(gc);
 	}
 	
 	@Override
 	public void render(GameContainer gc, Graphics g) throws SlickException {
 		g.clear();
-		g.translate(mScreenWidth/2, mScreenHeight/2);
-		int lineWidth = g.getFont().getWidth("Hello World");
-		g.drawString("Hello World!", -(lineWidth/2), 0.0f);
+		mMap.render(gc, g);
 	}
 
 	@Override
 	public void update(GameContainer gc, int delta) throws SlickException {
-		
+		mMap.update(gc, delta);
 	}
 	
 	private void updateCollision() {
