@@ -1,9 +1,5 @@
 package com.awesome.makeitrain;
 
-import java.io.InputStream;
-import java.net.URL;
-import java.util.ArrayList;
-
 import org.lwjgl.LWJGLUtil;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
@@ -11,12 +7,12 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.util.ResourceLoader;
-import org.newdawn.slick.util.ResourceLocation;
 
 import com.awesome.map.Map;
 import com.awesome.map.tiles.MapTile;
+import com.awesome.entity.Enemy;
 import com.awesome.entity.Entity;
+import com.awesome.entity.EntityManager;
 import com.awesome.entity.Player;
 
 public class MakeItRain extends BasicGame {
@@ -25,8 +21,6 @@ public class MakeItRain extends BasicGame {
 	private int mScreenWidth;
 	private int mScreenHeight;
 	private Map mMap;
-	
-	private ArrayList<Entity> entities;
 	
 	public MakeItRain() {
 		super("Make It Rain");
@@ -59,9 +53,10 @@ public class MakeItRain extends BasicGame {
 		mMap = Map.LoadFromFile("res/maps/TestMap.png");
 		mMap.init(gc);
 		
-		entities = new ArrayList<Entity>();
-		entities.add(new Player());
-		for (Entity entity : entities) {
+		EntityManager entityManager = EntityManager.getInstance();
+		entityManager.AddEntity(new Player());
+		entityManager.AddEntity(new Enemy());
+		for (Entity entity : entityManager.getEntities()) {
 			entity.init(gc);
 		}
 	}
@@ -71,7 +66,8 @@ public class MakeItRain extends BasicGame {
 		g.clear();
 		mMap.render(gc, g);
 		
-		for (Entity entity : entities) {
+		EntityManager entityManager = EntityManager.getInstance();
+		for (Entity entity : entityManager.getEntities()) {
 			entity.render(gc, g);
 		}
 	}
@@ -80,13 +76,15 @@ public class MakeItRain extends BasicGame {
 	public void update(GameContainer gc, int delta) throws SlickException {
 		mMap.update(gc, delta);
 		
-		for (Entity entity : entities) {
+		EntityManager entityManager = EntityManager.getInstance();
+		for (Entity entity : entityManager.getEntities()) {
 			entity.update(gc, delta);
 		}
 	}
 	
 	private void updateCollision() {
-		for (Entity entity : entities) {
+		EntityManager entityManager = EntityManager.getInstance();
+		for (Entity entity : entityManager.getEntities()) {
 			for (MapTile mapObject : mMap.getMapTiles()) {
 				entity.checkCollision(mapObject);
 			}

@@ -4,6 +4,8 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
+import com.awesome.map.Map;
+
 
 public class Player extends Entity {
 	public Player() {
@@ -14,6 +16,6 @@ public class Player extends Entity {
 		image = new Image("res/images/player.png");
 		boundingBox.setBounds(
 				boundingBox.getX(), boundingBox.getY(),
-				image.getWidth(), image.getHeight());
+				Map.TILE_SIZE, Map.TILE_SIZE);
 	}
 }
