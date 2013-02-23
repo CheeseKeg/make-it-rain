@@ -20,26 +20,30 @@ public class Map
 	private static final int TILE_SIZE = 32;
 	private static final String XML_TILE_ELEMENT = "Tile";
 	private static final String XML_TILE_TYPE_ATTRIBUTE = "type";
+	private static final String XML_TILE_NAME_ATTRIBUTE = "name";
 	private static final String XML_TILE_COLOR_ATTRIBUTE = "color";
-	private ArrayList<MapObject> mMapObjects;
+	private static final String XML_TILE_COLLISION_ATTRIBUTE = "collision";
+	private static final String XML_TILE_TEXTURE_ATTRIBUTE = "texture";
+	private ArrayList<MapTile> mMapTiles;
 	
-	public ArrayList<MapObject> getMapObjects()
+	public ArrayList<MapTile> getMapTiles()
 	{
-		return mMapObjects;
+		return mMapTiles;
 	}
 	
-	private Map(ArrayList<MapObject> inMapObjects)
+	private Map(ArrayList<MapTile> inMapTiles)
 	{
-		mMapObjects = inMapObjects;
+		mMapTiles = inMapTiles;
 	}
 	
-	private static MapObject GetMapObjectByType(String inType)
+	private static MapTile GetMapTileByTileDefinition(TileDefinition inTileDefinition)
 	{
-		switch(inType)
+		switch(inTileDefinition.getType())
 		{
-			case "grass":
+			case "turf":
 			{
-				return null;
+				TurfTileDefinition turfTileDef = (TurfTileDefinition)inTileDefinition;
+				return new TurfMapTile();
 			}
 			default:
 			{
@@ -53,7 +57,7 @@ public class Map
 		return (int)Math.round(inColor*255.0);
 	}
 	
-	private static MapObject ParseColor(Color inColor, HashMap<String, String> inTileDefinitions)
+	private static MapTile ParseColor(Color inColor, HashMap<String, TileDefinition> inTileDefinitions)
 	{
 		String colorString = String.format("%d,%d,%d,%d",
 				ConvertFloatColorToByte(inColor.r),
@@ -63,15 +67,15 @@ public class Map
 		
 		if (inTileDefinitions.containsKey(colorString))
 		{
-			String typeString = inTileDefinitions.get(colorString);
-			return GetMapObjectByType(typeString);
+			TileDefinition tileDef = inTileDefinitions.get(colorString);
+			return GetMapTileByTileDefinition(tileDef);
 		}
 		return null;
 	}
 	
-	private static HashMap<String, String> LoadTileDefinitions(String inMapFilename)
+	private static HashMap<String, TileDefinition> LoadTileDefinitions(String inMapFilename)
 	{
-		HashMap<String, String> tileDefs = new HashMap<String, String>();
+		HashMap<String, TileDefinition> tileDefs = new HashMap<String, TileDefinition>();
 		int extStartIndex = inMapFilename.lastIndexOf('.');
 		if (extStartIndex != -1)
 		{
@@ -84,9 +88,22 @@ public class Map
 				for (int tileIndex = 0; tileIndex < tileNodes.size(); tileIndex++)
 				{
 					String typeString = tileNodes.get(tileIndex).getAttribute(XML_TILE_TYPE_ATTRIBUTE);
+					String nameString = tileNodes.get(tileIndex).getAttribute(XML_TILE_NAME_ATTRIBUTE);
 					String colorString = tileNodes.get(tileIndex).getAttribute(XML_TILE_COLOR_ATTRIBUTE);
 					
-					tileDefs.put(colorString, typeString);
+					switch(typeString)
+					{
+						case "turf":
+						{
+							String collisionString = tileNodes.get(tileIndex).getAttribute(XML_TILE_COLLISION_ATTRIBUTE);
+							String textureString = tileNodes.get(tileIndex).getAttribute(XML_TILE_TEXTURE_ATTRIBUTE);
+							
+							boolean hasCollision = Boolean.parseBoolean(collisionString);
+							tileDefs.put(colorString, new TurfTileDefinition(typeString, nameString, hasCollision, textureString));
+							
+							break;
+						}
+					}
 				}
 			} 
 			catch (SlickException e) 
@@ -102,26 +119,26 @@ public class Map
 	{
 		try 
 		{
-			HashMap<String, String> tileDefs = LoadTileDefinitions(inFilename);
+			HashMap<String, TileDefinition> tileDefs = LoadTileDefinitions(inFilename);
 			BufferedImage mapImage = ImageIO.read(new File(inFilename));
 			int mapWidth = mapImage.getWidth();
 			int mapHeight = mapImage.getHeight();
-			ArrayList<MapObject> mapObjects = new ArrayList<MapObject>();
+			ArrayList<MapTile> mapTiles = new ArrayList<MapTile>();
 			for (int y = 0; y < mapHeight; y++)
 			{
 				for (int x = 0; x < mapWidth; x++)
 				{
 					Color pixelColor = new Color(mapImage.getRGB(x, y));
-					MapObject mapObject = ParseColor(pixelColor, tileDefs);
-					if (mapObject != null)
+					MapTile mapTile = ParseColor(pixelColor, tileDefs);
+					if (mapTile != null)
 					{
-						mapObject.setPosition(new Vector2f(x*TILE_SIZE,y*TILE_SIZE));
-						mapObjects.add(mapObject);
+						mapTile.setPosition(new Vector2f(x*TILE_SIZE,y*TILE_SIZE));
+						mapTiles.add(mapTile);
 					}
 				}
 			}
 			
-			return new Map(mapObjects);
+			return new Map(mapTiles);
 			
 		}
 		catch (IOException e) 

@@ -25,6 +25,8 @@ public class MakeItRain extends BasicGame {
 		mScreenWidth = 1280;
 		mScreenHeight = 720;
 		
+		Map testMap = Map.LoadFromFile("res/maps/TestMap.png");
+		
 		try {
 			app = new AppGameContainer(this);
 			app.setDisplayMode(mScreenWidth, mScreenHeight, false);
