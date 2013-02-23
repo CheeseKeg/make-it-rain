@@ -12,12 +12,69 @@ import com.awesome.map.tiles.TurfMapTile;
 
 public abstract class Entity extends GameObject implements Drawable {
 	
+	protected enum eControlFlag
+	{
+		kControlFlag_Jump,
+		kControlFlag_Left,
+		kControlFlag_Right,
+		kControlFlag_Attack,
+		
+		kControlFlag_Count
+	}
+	
+	protected boolean mControlFlags[] = new boolean[eControlFlag.kControlFlag_Count.ordinal()];
+	
 	public static final Vector2f GRAVITY = new Vector2f(0f, 0f);
 	
+	protected float mJumpVelocity = -5.0f;
+	protected float mMoveVelocity = 3.0f;
+	protected float mWalkFriction = 0.80f;
 	protected float mScale = 1.0f;
 	
 	public Entity() {
 		super();
+	}
+	
+	protected void SetControlFlag(eControlFlag inControlFlag, boolean inValue)
+	{
+		mControlFlags[inControlFlag.ordinal()] = inValue;
+	}
+	
+	protected boolean GetControlFlag(eControlFlag inControlFlag)
+	{
+		return mControlFlags[inControlFlag.ordinal()];
+	}
+	
+	private void ApplyControlFlags()
+	{
+		//Apply controls
+		
+		//Jump
+		if (GetControlFlag(eControlFlag.kControlFlag_Jump))
+		{
+			acceleration.y = mJumpVelocity;
+		}
+		//Left
+		if (GetControlFlag(eControlFlag.kControlFlag_Left))
+		{
+			acceleration.x -= mMoveVelocity;
+		}
+		//Right
+		if (GetControlFlag(eControlFlag.kControlFlag_Right))
+		{
+			acceleration.x += mMoveVelocity;
+		}
+		//Attack
+		if (GetControlFlag(eControlFlag.kControlFlag_Attack))
+		{
+			
+		}
+		
+		//Reset the flags
+		for (int controlFlagIndex = 0; controlFlagIndex < eControlFlag.kControlFlag_Count.ordinal(); controlFlagIndex++)
+		{
+			mControlFlags[controlFlagIndex] = false;
+		}
 	}
 	
 	@Override
@@ -27,10 +84,12 @@ public abstract class Entity extends GameObject implements Drawable {
 
 	@Override
 	public void update(GameContainer gc, int delta) throws SlickException {
+		ApplyControlFlags();
 		acceleration.add(GRAVITY);
 		boundingBox.setLocation(
 				boundingBox.getX() + acceleration.x,
 				boundingBox.getY() + acceleration.y);
+		acceleration.x *= mWalkFriction;
 	}
 	
 	public void checkCollision(MapTile tile) {
