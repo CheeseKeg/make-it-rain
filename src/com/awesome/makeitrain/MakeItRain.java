@@ -22,7 +22,7 @@ public class MakeItRain extends BasicGame {
 		
 		try {
 			app = new AppGameContainer(this);
-			app.setDisplayMode(800, 600, false);
+			app.setDisplayMode(1280, 720, false);
 			app.setVSync(true);
 			app.setTargetFrameRate(60);
 			app.start();
