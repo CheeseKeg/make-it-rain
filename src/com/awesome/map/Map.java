@@ -17,14 +17,20 @@ import org.newdawn.slick.util.xml.XMLElement;
 import org.newdawn.slick.util.xml.XMLElementList;
 import org.newdawn.slick.util.xml.XMLParser;
 
+import com.awesome.map.tiledefinitions.EnemySpawnTileDefinition;
+import com.awesome.map.tiledefinitions.PlayerSpawnTileDefinition;
 import com.awesome.map.tiledefinitions.TileDefinition;
 import com.awesome.map.tiledefinitions.TurfTileDefinition;
+import com.awesome.map.tiles.EnemySpawnMapTile;
 import com.awesome.map.tiles.MapTile;
+import com.awesome.map.tiles.PlayerSpawnMapTile;
 import com.awesome.map.tiles.TurfMapTile;
 
 public class Map 
 {
-	private static final int TILE_SIZE = 20;
+	//Global Tile Size Setting
+	public static final int TILE_SIZE = 32;
+	
 	private static final String XML_TILE_ELEMENT = "Tile";
 	private static final String XML_TILE_TYPE_ATTRIBUTE = "type";
 	private static final String XML_TILE_NAME_ATTRIBUTE = "name";
@@ -33,14 +39,19 @@ public class Map
 	private static final String XML_TILE_TEXTURE_ATTRIBUTE = "texture";
 	private ArrayList<MapTile> mMapTiles;
 	
+	private int mMapWidth;
+	private int mMapHeight;
+	
 	public ArrayList<MapTile> getMapTiles()
 	{
 		return mMapTiles;
 	}
 	
-	private Map(ArrayList<MapTile> inMapTiles)
+	private Map(ArrayList<MapTile> inMapTiles, int inMapWidth, int inMapHeight)
 	{
 		mMapTiles = inMapTiles;
+		mMapWidth = inMapWidth;
+		mMapHeight = inMapHeight;
 	}
 	
 	private static MapTile GetMapTileByTileDefinition(TileDefinition inTileDefinition)
@@ -51,6 +62,16 @@ public class Map
 			{
 				TurfTileDefinition turfTileDef = (TurfTileDefinition)inTileDefinition;
 				return new TurfMapTile(turfTileDef.getType(), turfTileDef.getName(), turfTileDef.getHasCollision(), turfTileDef.getTextureName());
+			}
+			case "player_spawn":
+			{
+				PlayerSpawnTileDefinition playerSpawnTileDef = (PlayerSpawnTileDefinition)inTileDefinition;
+				return new PlayerSpawnMapTile(playerSpawnTileDef.getType(), playerSpawnTileDef.getName());
+			}
+			case "enemy_spawn":
+			{
+				EnemySpawnTileDefinition enemySpawnTileDef = (EnemySpawnTileDefinition)inTileDefinition;
+				return new EnemySpawnMapTile(enemySpawnTileDef.getType(), enemySpawnTileDef.getName());
 			}
 			default:
 			{
@@ -110,6 +131,18 @@ public class Map
 							
 							break;
 						}
+						case "player_spawn":
+						{
+							tileDefs.put(colorString, new PlayerSpawnTileDefinition(typeString, nameString));
+							
+							break;
+						}
+						case "enemy_spawn":
+						{
+							tileDefs.put(colorString, new EnemySpawnTileDefinition(typeString, nameString));
+							
+							break;
+						}
 					}
 				}
 			} 
@@ -145,7 +178,7 @@ public class Map
 				}
 			}
 			
-			return new Map(mapTiles);
+			return new Map(mapTiles, mapWidth, mapHeight);
 			
 		}
 		catch (IOException e) 
@@ -167,7 +200,7 @@ public class Map
 	}
 	
 	public void render(GameContainer gc, Graphics g) throws SlickException
-	{
+	{		
 		for (MapTile mapTile : mMapTiles)
 		{
 			mapTile.render(gc, g);
