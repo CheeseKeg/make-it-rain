@@ -48,8 +48,6 @@ public class MakeItRain extends BasicGame {
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
-		
-		entities = new ArrayList<Entity>();
 	}
 	
 	// -- SLICK GAME METHOD OVERRIDES --
@@ -61,18 +59,30 @@ public class MakeItRain extends BasicGame {
 		mMap = Map.LoadFromFile("res/maps/TestMap.png");
 		mMap.init(gc);
 		
+		entities = new ArrayList<Entity>();
 		entities.add(new Player());
+		for (Entity entity : entities) {
+			entity.init(gc);
+		}
 	}
 	
 	@Override
 	public void render(GameContainer gc, Graphics g) throws SlickException {
 		g.clear();
 		mMap.render(gc, g);
+		
+		for (Entity entity : entities) {
+			entity.render(gc, g);
+		}
 	}
 
 	@Override
 	public void update(GameContainer gc, int delta) throws SlickException {
 		mMap.update(gc, delta);
+		
+		for (Entity entity : entities) {
+			entity.update(gc, delta);
+		}
 	}
 	
 	private void updateCollision() {
