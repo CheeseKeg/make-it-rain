@@ -103,11 +103,36 @@ public abstract class Entity extends GameObject implements Drawable {
 					// Do collision push
 					Rectangle BB = this.boundingBox, tileBB = tile.getBoundingBox();
 					
+					//float tDist, bDist, lDist, rDist;
+					//tDist = bDist = lDist = rDist = 0;
+					
+					// Top
 					if (BB.getMaxY() > tileBB.getMinY() && BB.getMaxY() < tileBB.getMaxY()) {
 						BB.setY(BB.getY() - (BB.getMaxY() - tileBB.getMinY()));
+						//lDist = (BB.getMaxY() - tileBB.getMinY());
 						velocity.y = 0;
 						mOnGround = true;
-					}
+					}/* else
+					// Bottom
+					if (BB.getMinY() < tileBB.getMaxY() && BB.getMinY() > tileBB.getMinY()) {
+						BB.setY(BB.getY() + (tileBB.getMaxY() - BB.getMinY()));
+						//bDist = (tileBB.getMaxY() - BB.getMinY());
+						velocity.y = 0;
+						mOnGround = true;
+					} else
+						
+					// Left
+					if (BB.getMaxX() > tileBB.getMinX() && BB.getMinX() < tileBB.getMinX()) {
+						BB.setX(BB.getX() - (BB.getMaxX() - tileBB.getMinX()));
+						//lDist = (BB.getMaxX() - tileBB.getMinX());
+						velocity.x = 0;
+					} else
+					// Right
+					if (BB.getMinX() < tileBB.getMaxX() && BB.getMaxX() > tileBB.getMaxX()) {
+						BB.setX(BB.getX() + (tileBB.getMaxX() - BB.getMinX()));
+						//rDist = (tileBB.getMaxX() - BB.getMinX());
+						velocity.x = 0;
+					}*/
 				}
 			}
 		}
