@@ -65,6 +65,7 @@ public class MakeItRain extends BasicGame {
 		
 		EntityManager entityManager = EntityManager.getInstance();
 		mPlayer = new Player();
+		mPlayer.init(gc);
 		
 		PlayerSpawnMapTile spawnTile = mMap.FindPlayerSpawnMapTile();
 		if (spawnTile != null)
@@ -72,11 +73,11 @@ public class MakeItRain extends BasicGame {
 			mPlayer.setPosition(spawnTile.getPosition());
 		}
 		
+		Enemy enemy = new Enemy();
+		enemy.init(gc);
+		
 		entityManager.AddEntity(mPlayer);
-		//entityManager.AddEntity(new Enemy());
-		for (Entity entity : entityManager.getEntities()) {
-			entity.init(gc);
-		}
+		entityManager.AddEntity(enemy);
 		
 		camOffset = getCameraOffset();
 	}
@@ -110,14 +111,16 @@ public class MakeItRain extends BasicGame {
 
 	@Override
 	public void update(GameContainer gc, int delta) throws SlickException {
+		EntityManager entityManager = EntityManager.getInstance();
 		mMap.update(gc, delta);
 		
-		EntityManager entityManager = EntityManager.getInstance();
 		for (Entity entity : entityManager.getEntities()) {
 			entity.update(gc, delta);
 		}
 		
 		updateCollision();
+		
+		entityManager.update();
 	}
 	
 	private void updateCollision() {

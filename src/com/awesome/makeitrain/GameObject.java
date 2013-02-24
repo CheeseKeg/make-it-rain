@@ -46,6 +46,16 @@ public abstract class GameObject {
 		boundingBox.setLocation(position.x, position.y);
 	}
 	
+	public void setVelocity(Vector2f velocity)
+	{
+		this.velocity = velocity;
+	}
+	
+	public Vector2f getVelocity()
+	{
+		return this.velocity;
+	}
+	
 	public int getID() {
 		return ID;
 	}

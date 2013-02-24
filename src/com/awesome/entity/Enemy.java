@@ -1,8 +1,11 @@
 package com.awesome.entity;
 
+import java.util.Random;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Vector2f;
 
 import com.awesome.map.Map;
 
@@ -44,7 +47,7 @@ public class Enemy extends Entity
 		return null;
 	}
 	
-	protected void Think()
+	protected void Think(GameContainer gc) throws SlickException
 	{
 		switch(mCurrentState)
 		{
@@ -121,6 +124,8 @@ public class Enemy extends Entity
 				
 				SetControlFlag(eControlFlag.kControlFlag_Jump, true);
 				
+				Die(gc);
+				
 				break;
 			}
 			case kAIState_Flee:
@@ -149,8 +154,28 @@ public class Enemy extends Entity
 		if (currentTime >= mNextThinkTime)
 		{
 			mNextThinkTime = currentTime + mThinkDelay;
-			Think();
+			Think(gc);
 		}
 		super.update(gc, delta);
+	}
+	
+	protected void Die(GameContainer gc) throws SlickException
+	{
+		EntityManager entityManager = EntityManager.getInstance();
+		Random rand = new Random();
+		int gibCount = rand.nextInt(500) + 1;
+		for (int gibIndex = 0; gibIndex < gibCount; gibIndex++)
+		{
+			Gib gib = new Gib();
+			gib.init(gc);
+			gib.setPosition(this.getPosition());
+			float xDir = (rand.nextFloat()*2.0f)-1.0f;
+			float yDir = -rand.nextFloat();
+			float xVel = rand.nextFloat()*100.0f;
+			float yVel = rand.nextFloat()*50.0f;
+			gib.setVelocity(new Vector2f(xDir*xVel, yDir*yVel));
+			entityManager.AddEntity(gib);
+		}
+		entityManager.RemoveEntity(this);
 	}
 }
