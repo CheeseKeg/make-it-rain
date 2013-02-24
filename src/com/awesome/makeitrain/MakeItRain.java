@@ -24,6 +24,7 @@ public class MakeItRain extends BasicGame {
 	private int mScreenHeight;
 	private Map mMap;
 	private Player mPlayer;
+	private Vector2f camOffset;
 	
 	public MakeItRain() {
 		super("Make It Rain");
@@ -45,6 +46,12 @@ public class MakeItRain extends BasicGame {
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private Vector2f getCameraOffset() {
+		Vector2f pos = mPlayer.getPosition();
+		return new Vector2f( ( mScreenWidth / 2 ) - ( Map.TILE_SIZE / 2 ) - pos.x,
+				( mScreenHeight / 2 ) - ( Map.TILE_SIZE / 2 ) - pos.y );
 	}
 	
 	// -- SLICK GAME METHOD OVERRIDES --
@@ -70,16 +77,19 @@ public class MakeItRain extends BasicGame {
 		for (Entity entity : entityManager.getEntities()) {
 			entity.init(gc);
 		}
+		
+		camOffset = getCameraOffset();
 	}
 	
 	@Override
 	public void render(GameContainer gc, Graphics g) throws SlickException {
 		g.clear();
 		
-		Vector2f pos = mPlayer.getPosition();
-		Vector2f offset = new Vector2f( ( mScreenWidth / 2 ) - ( Map.TILE_SIZE / 2 ) - pos.x,
-										( mScreenHeight / 2 ) - ( Map.TILE_SIZE / 2 ) - pos.y );
-		g.translate(offset.x, offset.y);
+		Vector2f camDest = getCameraOffset();
+		camOffset = new Vector2f(
+				camOffset.x + (camDest.x - camOffset.x)/30,
+				camOffset.y + (camDest.y - camOffset.y)/30);
+		g.translate(camOffset.x, camOffset.y);
 		
 		mMap.render(gc, g);
 		
@@ -88,7 +98,7 @@ public class MakeItRain extends BasicGame {
 			entity.render(gc, g);
 		}
 		
-		g.translate(-offset.x, -offset.y);
+		g.translate(-camOffset.x, -camOffset.y);
 		
 		g.drawLine(mScreenWidth/2.0f, 0.0f, mScreenWidth / 2.0f, mScreenHeight );
 		g.drawLine(0.0f, mScreenHeight / 2.0f, mScreenWidth, mScreenHeight / 2.0f );
