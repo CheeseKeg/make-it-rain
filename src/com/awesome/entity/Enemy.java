@@ -27,7 +27,7 @@ public class Enemy extends Entity
 		super();
 		
 		mScale = 5.0f;
-		mWalkFriction = 0.90f;
+		mWalkFriction = 0.98f;
 		mMoveVelocity = 5.0f;
 	}
 	

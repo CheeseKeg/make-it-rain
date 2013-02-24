@@ -73,7 +73,7 @@ public class MakeItRain extends BasicGame {
 		}
 		
 		entityManager.AddEntity(mPlayer);
-		entityManager.AddEntity(new Enemy());
+		//entityManager.AddEntity(new Enemy());
 		for (Entity entity : entityManager.getEntities()) {
 			entity.init(gc);
 		}
@@ -86,9 +86,16 @@ public class MakeItRain extends BasicGame {
 		g.clear();
 		
 		Vector2f camDest = getCameraOffset();
-		camOffset = new Vector2f(
-				camOffset.x + (camDest.x - camOffset.x)/30,
-				camOffset.y + (camDest.y - camOffset.y)/30);
+		if (camDest.distance(camOffset) <= 1.0f)
+		{
+			camOffset = camDest;
+		}
+		else
+		{
+			camOffset = new Vector2f(
+					camOffset.x + (camDest.x - camOffset.x)/10,
+					camOffset.y + (camDest.y - camOffset.y)/10);
+		}
 		g.translate(camOffset.x, camOffset.y);
 		
 		mMap.render(gc, g);
