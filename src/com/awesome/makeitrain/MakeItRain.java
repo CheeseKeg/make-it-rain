@@ -99,9 +99,6 @@ public class MakeItRain extends BasicGame {
 		}
 		
 		g.translate(-camOffset.x, -camOffset.y);
-		
-		g.drawLine(mScreenWidth/2.0f, 0.0f, mScreenWidth / 2.0f, mScreenHeight );
-		g.drawLine(0.0f, mScreenHeight / 2.0f, mScreenWidth, mScreenHeight / 2.0f );
 	}
 
 	@Override

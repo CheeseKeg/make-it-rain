@@ -23,7 +23,14 @@ public abstract class Entity extends GameObject implements Drawable {
 		kControlFlag_Count
 	}
 	
+	protected enum eDirection
+	{
+		kDirection_Left,
+		kDirection_Right
+	}
+	
 	protected boolean mControlFlags[] = new boolean[eControlFlag.kControlFlag_Count.ordinal()];
+	protected eDirection mDirection = eDirection.kDirection_Right;
 	
 	public static final Vector2f GRAVITY = new Vector2f(0f, 1f);
 	
@@ -61,11 +68,13 @@ public abstract class Entity extends GameObject implements Drawable {
 		if (GetControlFlag(eControlFlag.kControlFlag_Left))
 		{
 			velocity.x -= mMoveVelocity;
+			mDirection = eDirection.kDirection_Left;
 		}
 		//Right
 		if (GetControlFlag(eControlFlag.kControlFlag_Right))
 		{
 			velocity.x += mMoveVelocity;
+			mDirection = eDirection.kDirection_Right;
 		}
 		//Attack
 		if (GetControlFlag(eControlFlag.kControlFlag_Attack))
@@ -78,6 +87,11 @@ public abstract class Entity extends GameObject implements Drawable {
 		{
 			mControlFlags[controlFlagIndex] = false;
 		}
+	}
+	
+	public eDirection getDirection()
+	{
+		return mDirection;
 	}
 	
 	@Override
@@ -96,6 +110,9 @@ public abstract class Entity extends GameObject implements Drawable {
 	}
 	
 	public void checkCollision(MapTile tile) {
+		//Small collision optimization Dont check tiles that are too far away to touch us
+		if(this.getPosition().distance(tile.getPosition()) > 64.0f)
+				return;
 		if (this.boundingBox.intersects(tile.getBoundingBox())) {
 			if (tile.getType().equals("turf")) {
 				TurfMapTile turfHandle = (TurfMapTile)tile;
@@ -112,7 +129,24 @@ public abstract class Entity extends GameObject implements Drawable {
 						//lDist = (BB.getMaxY() - tileBB.getMinY());
 						velocity.y = 0;
 						mOnGround = true;
-					}/* else
+					}
+					
+					if (this.boundingBox.intersects(tile.getBoundingBox())) {
+						// Left
+						if (BB.getMaxX() > tileBB.getMinX() && BB.getMinX() < tileBB.getMinX()) {
+							BB.setX(BB.getX() - (BB.getMaxX() - tileBB.getMinX()));
+							//lDist = (BB.getMaxX() - tileBB.getMinX());
+							velocity.x = 0;
+						} else
+						// Right
+						if (BB.getMinX() < tileBB.getMaxX() && BB.getMaxX() > tileBB.getMaxX()) {
+							BB.setX(BB.getX() + (tileBB.getMaxX() - BB.getMinX()));
+							//rDist = (tileBB.getMaxX() - BB.getMinX());
+							velocity.x = 0;
+						}
+					}
+					/* else
+					}
 					// Bottom
 					if (BB.getMinY() < tileBB.getMaxY() && BB.getMinY() > tileBB.getMinY()) {
 						BB.setY(BB.getY() + (tileBB.getMaxY() - BB.getMinY()));
