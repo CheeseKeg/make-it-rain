@@ -96,7 +96,6 @@ public abstract class Entity extends GameObject implements Drawable {
 	public void checkCollision(MapTile tile) {
 		if (this.boundingBox.intersects(tile.getBoundingBox())) {
 			if (tile.getType().equals("turf")) {
-				System.out.println("lol");
 				TurfMapTile turfHandle = (TurfMapTile)tile;
 				if (turfHandle.getHasCollision()) {
 					// Do collision push
