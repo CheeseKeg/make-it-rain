@@ -23,7 +23,14 @@ public abstract class Entity extends GameObject implements Drawable {
 		kControlFlag_Count
 	}
 	
+	protected enum eDirection
+	{
+		kDirection_Left,
+		kDirection_Right
+	}
+	
 	protected boolean mControlFlags[] = new boolean[eControlFlag.kControlFlag_Count.ordinal()];
+	protected eDirection mDirection = eDirection.kDirection_Right;
 	
 	public static final Vector2f GRAVITY = new Vector2f(0f, 1f);
 	
@@ -61,11 +68,13 @@ public abstract class Entity extends GameObject implements Drawable {
 		if (GetControlFlag(eControlFlag.kControlFlag_Left))
 		{
 			velocity.x -= mMoveVelocity;
+			mDirection = eDirection.kDirection_Left;
 		}
 		//Right
 		if (GetControlFlag(eControlFlag.kControlFlag_Right))
 		{
 			velocity.x += mMoveVelocity;
+			mDirection = eDirection.kDirection_Right;
 		}
 		//Attack
 		if (GetControlFlag(eControlFlag.kControlFlag_Attack))
@@ -78,6 +87,11 @@ public abstract class Entity extends GameObject implements Drawable {
 		{
 			mControlFlags[controlFlagIndex] = false;
 		}
+	}
+	
+	public eDirection getDirection()
+	{
+		return mDirection;
 	}
 	
 	@Override
