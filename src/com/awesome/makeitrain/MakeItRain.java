@@ -11,6 +11,7 @@ import org.newdawn.slick.geom.Vector2f;
 
 import com.awesome.map.Map;
 import com.awesome.map.tiles.MapTile;
+import com.awesome.map.tiles.PlayerSpawnMapTile;
 import com.awesome.entity.Enemy;
 import com.awesome.entity.Entity;
 import com.awesome.entity.EntityManager;
@@ -57,6 +58,13 @@ public class MakeItRain extends BasicGame {
 		
 		EntityManager entityManager = EntityManager.getInstance();
 		mPlayer = new Player();
+		
+		PlayerSpawnMapTile spawnTile = mMap.FindPlayerSpawnMapTile();
+		if (spawnTile != null)
+		{
+			mPlayer.setPosition(spawnTile.getPosition());
+		}
+		
 		entityManager.AddEntity(mPlayer);
 		entityManager.AddEntity(new Enemy());
 		for (Entity entity : entityManager.getEntities()) {

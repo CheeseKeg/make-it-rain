@@ -54,6 +54,18 @@ public class Map
 		mMapHeight = inMapHeight;
 	}
 	
+	public PlayerSpawnMapTile FindPlayerSpawnMapTile()
+	{
+		for (MapTile mapTile : mMapTiles)
+		{
+			if (mapTile.getType().equals("player_spawn"))
+			{
+				return (PlayerSpawnMapTile)mapTile;
+			}
+		}
+		return null;
+	}
+	
 	private static MapTile GetMapTileByTileDefinition(TileDefinition inTileDefinition)
 	{
 		switch(inTileDefinition.getType())

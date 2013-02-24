@@ -27,7 +27,8 @@ public abstract class Entity extends GameObject implements Drawable {
 	
 	public static final Vector2f GRAVITY = new Vector2f(0f, 1f);
 	
-	protected float mJumpVelocity = -5.0f;
+	protected boolean mOnGround = false;
+	protected float mJumpVelocity = -10.0f;
 	protected float mMoveVelocity = 3.0f;
 	protected float mWalkFriction = 0.80f;
 	protected float mScale = 1.0f;
@@ -51,9 +52,10 @@ public abstract class Entity extends GameObject implements Drawable {
 		//Apply controls
 		
 		//Jump
-		if (GetControlFlag(eControlFlag.kControlFlag_Jump))
+		if (GetControlFlag(eControlFlag.kControlFlag_Jump) && mOnGround)
 		{
 			velocity.y = mJumpVelocity;
+			mOnGround = false;
 		}
 		//Left
 		if (GetControlFlag(eControlFlag.kControlFlag_Left))
@@ -105,6 +107,7 @@ public abstract class Entity extends GameObject implements Drawable {
 					if (BB.getMaxY() > tileBB.getMinY() && BB.getMaxY() < tileBB.getMaxY()) {
 						BB.setY(BB.getY() - (BB.getMaxY() - tileBB.getMinY()));
 						velocity.y = 0;
+						mOnGround = true;
 					}
 				}
 			}
