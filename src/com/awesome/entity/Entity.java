@@ -110,6 +110,9 @@ public abstract class Entity extends GameObject implements Drawable {
 	}
 	
 	public void checkCollision(MapTile tile) {
+		//Small collision optimization Dont check tiles that are too far away to touch us
+		if(this.getPosition().distance(tile.getPosition()) > 64.0f)
+				return;
 		if (this.boundingBox.intersects(tile.getBoundingBox())) {
 			if (tile.getType().equals("turf")) {
 				TurfMapTile turfHandle = (TurfMapTile)tile;
