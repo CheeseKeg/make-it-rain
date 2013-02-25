@@ -171,8 +171,8 @@ public class Enemy extends Entity
 			gib.setPosition(this.getPosition());
 			float xDir = (rand.nextFloat()*2.0f)-1.0f;
 			float yDir = -rand.nextFloat();
-			float xVel = rand.nextFloat()*100.0f;
-			float yVel = rand.nextFloat()*50.0f;
+			float xVel = rand.nextFloat()*50.0f;
+			float yVel = rand.nextFloat()*30.0f;
 			gib.setVelocity(new Vector2f(xDir*xVel, yDir*yVel));
 			entityManager.AddEntity(gib);
 		}
