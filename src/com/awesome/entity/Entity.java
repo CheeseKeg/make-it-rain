@@ -33,6 +33,7 @@ public abstract class Entity extends GameObject implements Drawable {
 	protected eDirection mDirection = eDirection.kDirection_Right;
 	
 	public static final Vector2f GRAVITY = new Vector2f(0f, 1f);
+	public static final float FREEFALL_LIMIT = 9f;
 	
 	protected boolean mOnGround = false;
 	protected float mJumpVelocity = -10.0f;
@@ -103,6 +104,10 @@ public abstract class Entity extends GameObject implements Drawable {
 	public void update(GameContainer gc, int delta) throws SlickException {
 		ApplyControlFlags();
 		velocity.add(GRAVITY);
+		
+		if (velocity.getY() > FREEFALL_LIMIT)
+			velocity.set(velocity.getX(), FREEFALL_LIMIT);
+		
 		boundingBox.setLocation(
 				boundingBox.getX() + velocity.x,
 				boundingBox.getY() + velocity.y);
@@ -110,9 +115,7 @@ public abstract class Entity extends GameObject implements Drawable {
 	}
 	
 	public void checkCollision(MapTile tile) {
-		//Small collision optimization Dont check tiles that are too far away to touch us
-		//if(this.getPosition().distance(tile.getPosition()) > 64.0f)
-		//		return;
+		//Small collision optimization; dont check tiles that are too far away to touch us
 		if ((this.getPosition().distance(tile.getPosition()) <= 64.0f)
 				&& boundingBox.intersects(tile.getBoundingBox())
 				&& tile.getType().equals("turf")
@@ -121,69 +124,35 @@ public abstract class Entity extends GameObject implements Drawable {
 			Rectangle BB = boundingBox, tileBB = tile.getBoundingBox();
 			float left = BB.getX(), right = left + BB.getWidth(),
 					top = BB.getY(), bottom = top + BB.getHeight();
-			final int BULK = 5;
+			final int BULK = 10;
 			
 			// Left & right
-			Rectangle leftSensor = new Rectangle(left, top + BULK, left + BULK, bottom - BULK);
-			Rectangle rightSensor = new Rectangle(right - BULK, top + BULK, right, bottom - BULK);
-			if (leftSensor.intersects(tileBB)) {
-				System.out.println("LeftSensor: " + leftSensor + "\nTileBB:" + tileBB);
-				velocity.x = 0;
-				BB.setX(tileBB.getX() + tileBB.getWidth());
-			} else if (rightSensor.intersects(tileBB)) {
-				velocity.x = 0;
-				BB.setX(tileBB.getX() - BB.getX());
+			{
+				Rectangle leftSensor = new Rectangle(left, top + BULK, BULK, BB.getHeight() - 2*BULK);
+				Rectangle rightSensor = new Rectangle(right - BULK, top + BULK, BULK, BB.getHeight() - 2*BULK);
+				if (leftSensor.intersects(tileBB)) {
+					velocity.x = 0;
+					BB.setX(tileBB.getX() + tileBB.getWidth());
+				} else if (rightSensor.intersects(tileBB)) {
+					velocity.x = 0;
+					BB.setX(tileBB.getX() - BB.getWidth());
+				}
 			}
 			
 			left = BB.getX(); right = left + BB.getWidth();
 			// Bottom & top
-			Rectangle bottomSensor = new Rectangle(left, bottom - BULK, right, bottom);
-			Rectangle topSensor = new Rectangle(left, top, right, top + BULK);
-			if (bottomSensor.intersects(tileBB)) {
-				velocity.y = 0;
-				mOnGround = true;
-				BB.setY(tileBB.getY() - BB.getHeight());
-			} else if (topSensor.intersects(tileBB)) {
-				velocity.y = 0;
-				BB.setY(tileBB.getY() + tileBB.getHeight());
-			}
-		
-			/*
-			Rectangle BB = this.boundingBox, tileBB = tile.getBoundingBox();
-			
-			//float tDist, bDist, lDist, rDist;
-			//tDist = bDist = lDist = rDist = 0;
-			
-			// Top
-			if (BB.getMaxY() > tileBB.getMinY() && BB.getMaxY() < tileBB.getMaxY()) {
-				BB.setY(BB.getY() - (BB.getMaxY() - tileBB.getMinY()));
-				//lDist = (BB.getMaxY() - tileBB.getMinY());
-				velocity.y = 0;
-				mOnGround = true;
-			}
-			
-			if (this.boundingBox.intersects(tile.getBoundingBox())) {
-				// Left
-				if (BB.getMaxX() > tileBB.getMinX() && BB.getMinX() < tileBB.getMinX()) {
-					BB.setX(BB.getX() - (BB.getMaxX() - tileBB.getMinX()));
-					//lDist = (BB.getMaxX() - tileBB.getMinX());
-					velocity.x = 0;
-				} else
-				// Right
-				if (BB.getMinX() < tileBB.getMaxX() && BB.getMaxX() > tileBB.getMaxX()) {
-					BB.setX(BB.getX() + (tileBB.getMaxX() - BB.getMinX()));
-					//rDist = (tileBB.getMaxX() - BB.getMinX());
-					velocity.x = 0;
+			{
+				Rectangle bottomSensor = new Rectangle(left + BULK, bottom - BULK, BB.getWidth() - 2*BULK, BULK);
+				Rectangle topSensor = new Rectangle(left + BULK, top, BB.getWidth() - 2*BULK, BULK);
+				if (bottomSensor.intersects(tileBB)) {
+					velocity.y = 0;
+					mOnGround = true;
+					BB.setY(tileBB.getY() - BB.getHeight());
+				} else if (topSensor.intersects(tileBB)) {
+					velocity.y = 0;
+					BB.setY(tileBB.getY() + tileBB.getHeight());
 				}
-			}*/
+			}
 		}
-	}
-	
-	private float min(float a, float b) {
-		return a > b ? b : a;
-	}
-	
-	private float max(float a, float b) {
-		return a > b ? a : b;
 	}
 }
