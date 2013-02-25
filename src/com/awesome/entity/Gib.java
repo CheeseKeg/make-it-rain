@@ -21,6 +21,7 @@ public class Gib extends Entity
 				boundingBox.getY(),
 				Map.TILE_SIZE,
 				Map.TILE_SIZE);
+		mWalkFriction = 0.95f;
 	}
 
 	@Override
