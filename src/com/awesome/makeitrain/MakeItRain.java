@@ -104,6 +104,7 @@ public class MakeItRain extends BasicGame {
 		EntityManager entityManager = EntityManager.getInstance();
 		for (Entity entity : entityManager.getEntities()) {
 			entity.render(gc, g);
+			g.draw(entity.getBoundingBox());
 		}
 		
 		g.translate(-camOffset.x, -camOffset.y);

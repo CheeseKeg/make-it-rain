@@ -111,64 +111,71 @@ public abstract class Entity extends GameObject implements Drawable {
 	
 	public void checkCollision(MapTile tile) {
 		//Small collision optimization Dont check tiles that are too far away to touch us
-		if(this.getPosition().distance(tile.getPosition()) > 64.0f)
-				return;
-		if (this.boundingBox.intersects(tile.getBoundingBox())) {
-			if (tile.getType().equals("turf")) {
-				TurfMapTile turfHandle = (TurfMapTile)tile;
-				if (turfHandle.getHasCollision()) {
-					// Do collision push
-					Rectangle BB = this.boundingBox, tileBB = tile.getBoundingBox();
-					
-					//float tDist, bDist, lDist, rDist;
-					//tDist = bDist = lDist = rDist = 0;
-					
-					// Top
-					if (BB.getMaxY() > tileBB.getMinY() && BB.getMaxY() < tileBB.getMaxY()) {
-						BB.setY(BB.getY() - (BB.getMaxY() - tileBB.getMinY()));
-						//lDist = (BB.getMaxY() - tileBB.getMinY());
-						velocity.y = 0;
-						mOnGround = true;
-					}
-					
-					if (this.boundingBox.intersects(tile.getBoundingBox())) {
-						// Left
-						if (BB.getMaxX() > tileBB.getMinX() && BB.getMinX() < tileBB.getMinX()) {
-							BB.setX(BB.getX() - (BB.getMaxX() - tileBB.getMinX()));
-							//lDist = (BB.getMaxX() - tileBB.getMinX());
-							velocity.x = 0;
-						} else
-						// Right
-						if (BB.getMinX() < tileBB.getMaxX() && BB.getMaxX() > tileBB.getMaxX()) {
-							BB.setX(BB.getX() + (tileBB.getMaxX() - BB.getMinX()));
-							//rDist = (tileBB.getMaxX() - BB.getMinX());
-							velocity.x = 0;
-						}
-					}
-					/* else
-					}
-					// Bottom
-					if (BB.getMinY() < tileBB.getMaxY() && BB.getMinY() > tileBB.getMinY()) {
-						BB.setY(BB.getY() + (tileBB.getMaxY() - BB.getMinY()));
-						//bDist = (tileBB.getMaxY() - BB.getMinY());
-						velocity.y = 0;
-						mOnGround = true;
-					} else
-						
-					// Left
-					if (BB.getMaxX() > tileBB.getMinX() && BB.getMinX() < tileBB.getMinX()) {
-						BB.setX(BB.getX() - (BB.getMaxX() - tileBB.getMinX()));
-						//lDist = (BB.getMaxX() - tileBB.getMinX());
-						velocity.x = 0;
-					} else
-					// Right
-					if (BB.getMinX() < tileBB.getMaxX() && BB.getMaxX() > tileBB.getMaxX()) {
-						BB.setX(BB.getX() + (tileBB.getMaxX() - BB.getMinX()));
-						//rDist = (tileBB.getMaxX() - BB.getMinX());
-						velocity.x = 0;
-					}*/
-				}
+		//if(this.getPosition().distance(tile.getPosition()) > 64.0f)
+		//		return;
+		if ((this.getPosition().distance(tile.getPosition()) <= 64.0f)
+				&& boundingBox.intersects(tile.getBoundingBox())
+				&& tile.getType().equals("turf")
+				&& ((TurfMapTile)tile).getHasCollision()) {
+			// Do collision push
+			Rectangle BB = boundingBox, tileBB = tile.getBoundingBox();
+			float left = BB.getX(), right = left + BB.getWidth(),
+					top = BB.getY(), bottom = top + BB.getHeight();
+			final int BULK = 5;
+			
+			// Left & right
+			Rectangle leftSensor = new Rectangle(left, top + BULK, left + BULK, bottom - BULK);
+			Rectangle rightSensor = new Rectangle(right - BULK, top + BULK, right, bottom - BULK);
+			if (leftSensor.intersects(tileBB)) {
+				System.out.println("LeftSensor: " + leftSensor + "\nTileBB:" + tileBB);
+				velocity.x = 0;
+				BB.setX(tileBB.getX() + tileBB.getWidth());
+			} else if (rightSensor.intersects(tileBB)) {
+				velocity.x = 0;
+				BB.setX(tileBB.getX() - BB.getX());
 			}
+			
+			left = BB.getX(); right = left + BB.getWidth();
+			// Bottom & top
+			Rectangle bottomSensor = new Rectangle(left, bottom - BULK, right, bottom);
+			Rectangle topSensor = new Rectangle(left, top, right, top + BULK);
+			if (bottomSensor.intersects(tileBB)) {
+				velocity.y = 0;
+				mOnGround = true;
+				BB.setY(tileBB.getY() - BB.getHeight());
+			} else if (topSensor.intersects(tileBB)) {
+				velocity.y = 0;
+				BB.setY(tileBB.getY() + tileBB.getHeight());
+			}
+		
+			/*
+			Rectangle BB = this.boundingBox, tileBB = tile.getBoundingBox();
+			
+			//float tDist, bDist, lDist, rDist;
+			//tDist = bDist = lDist = rDist = 0;
+			
+			// Top
+			if (BB.getMaxY() > tileBB.getMinY() && BB.getMaxY() < tileBB.getMaxY()) {
+				BB.setY(BB.getY() - (BB.getMaxY() - tileBB.getMinY()));
+				//lDist = (BB.getMaxY() - tileBB.getMinY());
+				velocity.y = 0;
+				mOnGround = true;
+			}
+			
+			if (this.boundingBox.intersects(tile.getBoundingBox())) {
+				// Left
+				if (BB.getMaxX() > tileBB.getMinX() && BB.getMinX() < tileBB.getMinX()) {
+					BB.setX(BB.getX() - (BB.getMaxX() - tileBB.getMinX()));
+					//lDist = (BB.getMaxX() - tileBB.getMinX());
+					velocity.x = 0;
+				} else
+				// Right
+				if (BB.getMinX() < tileBB.getMaxX() && BB.getMaxX() > tileBB.getMaxX()) {
+					BB.setX(BB.getX() + (tileBB.getMaxX() - BB.getMinX()));
+					//rDist = (tileBB.getMaxX() - BB.getMinX());
+					velocity.x = 0;
+				}
+			}*/
 		}
 	}
 	
