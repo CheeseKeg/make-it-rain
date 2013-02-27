@@ -23,14 +23,14 @@ public class Enemy extends Entity
 	protected eAIState mCurrentState = eAIState.kAIState_Idle;
 	protected long mNextThinkTime = 0;
 	protected static final long mThinkDelay = 200;
-	protected float mRange = Map.TILE_SIZE/2.0f;
+	protected float mRange = (float)Map.TILE_SIZE;
 	
 	public Enemy()
 	{
 		super();
 		
-		mScale = 5.0f;
-		mWalkFriction = 0.98f;
+		//mScale = 5.0f;
+		mGroundFriction = 0.90f;
 		mMoveVelocity = 5.0f;
 	}
 	

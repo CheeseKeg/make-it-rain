@@ -130,6 +130,11 @@ public class MakeItRain extends BasicGame {
 				entity.checkCollision(mapObject);
 			}
 		}
+		for (Entity entity : entityManager.getEntities()) {
+			for (Entity otherEntity : entityManager.getEntities()) {
+				entity.checkCollision(otherEntity);
+			}
+		}
 	}
 	
 	@Override

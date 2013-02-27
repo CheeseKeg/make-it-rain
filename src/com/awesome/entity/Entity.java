@@ -36,10 +36,12 @@ public abstract class Entity extends GameObject implements Drawable {
 	public static final float FREEFALL_LIMIT = 9f;
 	
 	protected boolean mOnGround = false;
-	protected float mJumpVelocity = -10.0f;
+	protected float mJumpVelocity = -12.0f;
 	protected float mMoveVelocity = 3.0f;
-	protected float mWalkFriction = 0.80f;
+	protected float mGroundFriction = 0.80f;
+	protected float mAirFriction = 0.85f;
 	protected float mScale = 1.0f;
+	protected float mBounciness = 0.0f;
 	
 	public Entity() {
 		super();
@@ -111,7 +113,38 @@ public abstract class Entity extends GameObject implements Drawable {
 		boundingBox.setLocation(
 				boundingBox.getX() + velocity.x,
 				boundingBox.getY() + velocity.y);
-		velocity.x *= mWalkFriction;
+		
+		if (mOnGround)
+		{
+			velocity.x *= mGroundFriction;
+		}
+		else
+		{
+			velocity.x *= (mAirFriction);
+		}
+	}
+	
+	public void collide(Entity otherEntity)
+	{
+		if (!(this instanceof Gib) && (otherEntity instanceof Gib))
+		{
+			EntityManager.getInstance().RemoveEntity(otherEntity);
+			mScale += 0.001f;
+		}
+		else if (!(this instanceof Gib) && !(otherEntity instanceof Gib))
+		{
+			mScale -= 0.001f;
+		}
+	}
+	
+	public void checkCollision(Entity otherEntity) 
+	{
+		if (this != otherEntity && (this.getPosition().distance(otherEntity.getPosition()) <= 64.0f)
+				&& boundingBox.intersects(otherEntity.getBoundingBox()))
+				{
+					this.collide(otherEntity);
+					otherEntity.collide(this);
+				}
 	}
 	
 	public void checkCollision(MapTile tile) {
@@ -145,7 +178,14 @@ public abstract class Entity extends GameObject implements Drawable {
 				Rectangle bottomSensor = new Rectangle(left + BULK, bottom - BULK, BB.getWidth() - 2*BULK, BULK);
 				Rectangle topSensor = new Rectangle(left + BULK, top, BB.getWidth() - 2*BULK, BULK);
 				if (bottomSensor.intersects(tileBB)) {
-					velocity.y = 0;
+					if (!mOnGround)
+					{
+						velocity.y = -( Math.abs(velocity.y+velocity.x) / 2.0f ) * mBounciness;
+					}
+					else
+					{
+						velocity.y = 0.0f;
+					}
 					mOnGround = true;
 					BB.setY(tileBB.getY() - BB.getHeight());
 				} else if (topSensor.intersects(tileBB)) {

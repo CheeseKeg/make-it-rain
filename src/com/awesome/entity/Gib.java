@@ -12,6 +12,7 @@ public class Gib extends Entity
 {
 	protected String mGibName = "gib";
 	protected static final int GIB_IMAGE_COUNT = 3;
+	protected float mRotation = 0.0f;
 	@Override
 	public void init(GameContainer gc) throws SlickException 
 	{
@@ -21,15 +22,20 @@ public class Gib extends Entity
 				boundingBox.getY(),
 				Map.TILE_SIZE,
 				Map.TILE_SIZE);
-		mWalkFriction = 0.95f;
+		mGroundFriction = 0.96f;
+		mBounciness = 0.92f;
 	}
 
 	@Override
 	public void update(GameContainer gc, int delta) throws SlickException 
 	{
 		long currentTime = gc.getTime();
-		float floatVel = ((float)Math.sin(currentTime/1000.0));
-		velocity.add(floatVel);
+		
+		if (!mOnGround)
+		{
+			image.rotate((currentTime / 1000.0f) / 360.0f);
+		}
+		
 		super.update(gc, delta);
 	}
 
